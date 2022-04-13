@@ -2,12 +2,12 @@
  * @description 反转一个单向链表
  */
 
-interface ILinkListNode {
+export interface ILinkListNode {
   value: string
   next?: ILinkListNode | null
 }
 
-const reverseLL = (head: ILinkListNode): ILinkListNode => {
+export const reverseLL = (head: ILinkListNode): ILinkListNode => {
   let prevNode: ILinkListNode | null = null
   let curNode: ILinkListNode = head
   let nextNode: ILinkListNode | null = null
@@ -26,7 +26,7 @@ const reverseLL = (head: ILinkListNode): ILinkListNode => {
  * @param arr 链表 value 数组
  * @returns 链表头
  */
-const createLinkList = (arr: string[]): ILinkListNode => {
+export const createLinkList = (arr: string[]): ILinkListNode => {
   const length = arr.length
 
   if (!length) {
@@ -48,4 +48,4 @@ const createLinkList = (arr: string[]): ILinkListNode => {
   return curNode
 }
 
-console.log(createLinkList(['a', 'b', 'c']))
+// console.log(createLinkList(['a', 'b', 'c']))
