@@ -55,15 +55,15 @@ export class MyQueue {
   }
 }
 
-const q = new MyQueue()
-q.add('a')
-q.add('b')
-q.add('c')
-console.log('q >>> ', q)
-console.log('q.delete >>> ', q.delete())
-console.log('q1 >>> ', q)
-console.log(q.length)
+// const q = new MyQueue()
+// q.add('a')
+// q.add('b')
+// q.add('c')
+// console.log('q >>> ', q)
+// console.log('q.delete >>> ', q.delete())
+// console.log('q1 >>> ', q)
+// console.log(q.length)
 
-console.log('q.delete2 >>> ', q.delete())
-console.log('q.delete3 >>> ', q.delete())
-console.log('q.delete4 >>> ', q.delete())
+// console.log('q.delete2 >>> ', q.delete())
+// console.log('q.delete3 >>> ', q.delete())
+// console.log('q.delete4 >>> ', q.delete())
