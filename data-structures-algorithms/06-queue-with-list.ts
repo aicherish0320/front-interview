@@ -67,3 +67,24 @@ export class MyQueue {
 // console.log('q.delete2 >>> ', q.delete())
 // console.log('q.delete3 >>> ', q.delete())
 // console.log('q.delete4 >>> ', q.delete())
+
+// 性能测试
+const q1 = new MyQueue()
+console.time('queue with list')
+for (let i = 0; i < 10 * 10000; i++) {
+  q1.add(i.toString())
+}
+for (let i = 0; i < 10 * 10000; i++) {
+  q1.delete()
+}
+console.timeEnd('queue with list') // 32.696ms
+
+const q2 = []
+console.time('queue with array')
+for (let i = 0; i < 10 * 10000; i++) {
+  q2.push(i.toString())
+}
+for (let i = 0; i < 10 * 10000; i++) {
+  q2.shift()
+}
+console.timeEnd('queue with array') // 952.434ms
