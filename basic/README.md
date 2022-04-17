@@ -23,5 +23,52 @@
   - 节流：限制执行频率，有节奏的执行
   - 防抖：限制执行次数，多次密集的触发只执行一次
   - 节流关注过程，防抖关注结果
-- 箭头函数的缺点，哪里不能用箭头函数
+- 3. px % em rem vw/vh 有什么区别
+  - px：基本单位，绝对单位（其他的都是相对单位）
+  - %：相对于父元素的宽度比例
+  - em：相对于当前元素的 font-size
+  - rem：相对于根节点的 font-size
+  - vw：屏幕宽度的 1%
+  - vh：屏幕高度的 1%
+  - vmin：两者的最小值，vmax 两者的最大值
+- 4. 箭头函数
+  - 箭头函数有什么缺点
+    - 没有 arguments
+    - 无法通过 apply call bind 改变 this
+  - 什么时候不能使用箭头函数
+    - 对象方法
+      ```js
+      const obj = {
+        name: 'aic',
+        getName: () => {
+          console.log(this.name) // undefined
+        }
+      }
+      ```
+    - 原型方法
+      ```js
+      const obj = {
+        name: 'aic'
+      }
+      obj.__proto__getName = () => {
+        return this.name // undefined
+      }
+      ```
+    - 构造函数
+      ```js
+      const Foo = (name, age) => {
+        this.name = name
+        this.age = age
+      }
+      const f = new Foo('jack', 20) // error, Foo is not a constructor
+      ```
+    - 动态上下文中的回调函数
+      ```js
+      const btn = document.getElementById('btn1')
+      btn.addEventListener('click', () => {
+        // this === window
+        this.innerHTML = 'clicked'
+      })
+      ```
+    - Vue 生命周期 和 method
 - Vue 组件通讯方式有几种？尽量说全面
