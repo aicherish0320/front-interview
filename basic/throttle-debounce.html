@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>防抖和节流</title>
+  </head>
+  <body>
+    <input type="text" id="input" />
+  </body>
+  <script>
+    // 防抖
+    const debounce = (fn, timeout = 1000) => {
+      let timer
+
+      return function (...args) {
+        if (timer) {
+          clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+          fn.call(this, ...args)
+          timer = null
+        }, timeout)
+      }
+    }
+
+    const handleInput = (e) => {
+      console.log(e.target.value)
+    }
+
+    // const throttleInput = debounce(handleInput)
+
+    // document.getElementById('input').addEventListener('input', debounceInput)
+
+    // 节流
+    const throttle = (fn, timeout = 1000) => {
+      let timer
+      return function (...args) {
+        if (timer) return
+
+        timer = setTimeout(() => {
+          fn.call(this, ...args)
+          timer = null
+        }, timeout)
+      }
+    }
+
+    const throttleInput = throttle(handleInput, 500)
+    document.getElementById('input').addEventListener('input', throttleInput)
+  </script>
+</html>
