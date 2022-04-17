@@ -53,3 +53,102 @@ postData('http://localhost:3300/body', {
 ```
 
 ## 上传文件
+
+可以通过 HTML `<input type="file" />` 元素，`FormData()` 和 `Fetch`上传文件
+
+```js
+document.getElementById('file').addEventListener('change', () => {
+  const formData = new FormData()
+  const fileField = document.querySelector('input[type="file"]')
+
+  formData.append('username', 'aic')
+  formData.append('avatar', fileField.files[0])
+
+  fetch('http://localhost:3300/profile', {
+    method: 'PUT',
+    body: formData
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log('Success >>> ', result)
+    })
+    .catch((error) => {
+      console.error('Error >> ', error)
+    })
+})
+```
+
+## 检测请求是否成功
+
+如果遇到网络故障或服务端的 CORS 配置错误时，fetch() promise 将会 reject，带上一个 TypeError 对象。虽然这个情况经常是遇到了权限问题或类似问题-比如 404 不是一个网络故障。想要精确的判断 fetch() 是否成功，需要包含 promise resolved 的情况，此时再判断 Response.ok 是否为 true。类似以下代码：
+
+```js
+fetch('flowers.jpg')
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    return response.blob()
+  })
+  .then((myBlob) => {
+    myImage.src = URL.createObjectURL(myBlob)
+  })
+  .catch((error) => {
+    console.error('There has been a problem with your fetch operation', error)
+  })
+```
+
+## 自定义请求对象
+
+除了传给 fetch() 一个资源的地址，你还可以通过使用 Request 构造函数来创建一个 request 对象，然后再作为参数传给 fetch()
+
+```js
+const myHeaders = new Headers()
+
+const myRequest = new Request('flowers.jpg', {
+  method: 'GET',
+  headers: myHeaders,
+  mode: 'cors',
+  cache: 'default'
+})
+fetch(myRequest)
+  .then((response) => response.blob())
+  .then((myBlob) => {
+    myImage.src = URL.createObjectURL(myBlob)
+  })
+```
+
+## Headers
+
+使用 Headers 的接口，你可以通过 Headers() 构造函数来创建一个你自己的 headers 对象。一个 headers 对象是一个简单的多键值对：
+
+```js
+const content = 'Hello World'
+const myHeaders = new Headers()
+myHeaders.append('Content-Type', 'text/plain')
+myHeaders.append('Content-Length', content.length.toString())
+myHeaders.append('Content-Type', 'text/plain')
+```
+
+## Response 对象
+
+Response 实例是在 fetch() 处理完 promise 之后返回的
+
+你会用到的最常见的 response 属性有：
+
+- Response.status - 整数（默认值为 200）为 response 的状态码
+- Response.statusText - 字符串。该值与 HTTP 状态码消息对应
+- Response.ok，该属性是用来检查 response 的状态是否在 200-299 这个范围内。该属性返回一个布尔值
+
+Response() 构造方法接受两个可选参数 - response 的 body 和一个初始化对象
+
+## Body
+
+不管是请求还是响应都能够包含 body 对象。body 也可以是以下任意类型的实例
+
+- ArrayBuffer
+- ArrayBufferView
+- Blob/File
+- string
+- URLSearchParams
+- FormData
