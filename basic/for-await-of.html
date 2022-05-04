@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    /*
+      用于遍历多个 promise
+    */
+    function createPromise(val) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(val)
+        }, 1000)
+      })
+    }
+    ;(async function () {
+      const promiseArr = [
+        createPromise(100),
+        createPromise(200),
+        createPromise(300)
+      ]
+      for await (const iterator of promiseArr) {
+        console.log('iterator >>> ', iterator)
+      }
+    })()
+  </script>
+</html>
