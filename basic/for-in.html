@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>for-in</title>
+  </head>
+  <body>
+    <p>1</p>
+    <p>2</p>
+    <p>3</p>
+  </body>
+  <script>
+    /*
+      for...in -> key
+        用于可枚举数据，如对象、数组、字符串
+        对象
+      for...of -> value
+        用于可迭代数据，如数组、字符串、Map、Set
+        Map Set generator
+    */
+    const obj = { foo: 'foo' }
+    const arr = [100, 200, 300]
+    // for (const key in arr) {
+    //   console.log('key >>> ', key)
+    // }
+    // for (const value of arr) {
+    //   console.log('value >>> ', value)
+    // }
+
+    // for (const p of document.querySelectorAll('p')) {
+    //   console.log('p >>> ', p.innerHTML)
+    // }
+
+    // 可迭代
+    console.log(arr[Symbol.iterator]())
+    // console.log(obj[Symbol.iterator]()) // error
+  </script>
+</html>
