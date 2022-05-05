@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <Child msg="msg" @a="() => {}" @b="() => {}" />
+    </div>
+    <hr />
+    <div id="app3">{{ msg }}</div>
+  </body>
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    Vue.component('Child', {
+      template: `
+        <div>Child-{{ $attrs }}-{{ Object.keys($listeners) }}</div>
+      `
+    })
+
+    const app = new Vue({
+      el: '#app'
+    })
+  </script>
+  <script src="https://unpkg.com/vue@next"></script>
+
+  <script>
+    const app3 = Vue.createApp({
+      template: `
+        <div @click="msg+=1">Click-{{ msg }}</div>
+        <Child />
+      `,
+      provide() {
+        return {
+          msg: Vue.computed(() => this.msg)
+        }
+      },
+      data() {
+        return {
+          msg: 'msg'
+        }
+      }
+    })
+    app3.component('Child', {
+      inject: ['msg'],
+      template: `
+        <div>Child-{{ msg }}</div>
+      `
+    })
+    app3.mount('#app3')
+  </script>
+</html>
