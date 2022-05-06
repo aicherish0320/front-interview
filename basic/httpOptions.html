@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTP跨域请求时为何发送options请求</title>
+  </head>
+  <body></body>
+  <script>
+    /*
+      跨域：
+        浏览器同源策略、安全策略，浏览器不允许请求不同域名的资源
+        同源策略一般限制 Ajax 网络请求，不能跨域请求 server
+        不会限制 <link> <img> <script> <iframe> 加载第三方资源
+      
+      JSONP 利用了 script 
+      CORS 配置 允许跨域 （服务端）
+      
+    */
+  </script>
+  <!-- 
+    <script>
+      window.onSuccess = function(data) { console.log(data) }
+    </script> 
+    <script src="https://api"></script>
+    返回: 'onSuccess({errno: 0, data: []})'
+  -->
+  <!-- 
+    options 请求
+    Access-Control-Allow-Methods: GET,HEAD,PUT,PATCH
+
+    options 请求，是跨域请求之前的预检查
+    浏览器自行发起的，无需我们干预
+    不会影响实际的功能
+   -->
+</html>
