@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>内存泄漏</title>
+  </head>
+  <body>
+    <button id="btn">start</button>
+  </body>
+  <script>
+    const arr = []
+    for (let i = 0; i < 10 * 10000; i++) {
+      arr.push(i)
+    }
+    function bind() {
+      const obj = {
+        str: JSON.stringify(arr)
+      }
+      window.addEventListener('resize', () => {
+        console.log(arr)
+      })
+    }
+    let n = 0
+    function start() {
+      setTimeout(() => {
+        bind()
+        n++
+        if (n < 50) {
+          start()
+        } else {
+          alert('done')
+        }
+      }, 200)
+    }
+    document.getElementById('btn').addEventListener('click', () => {
+      start()
+    })
+  </script>
+</html>
