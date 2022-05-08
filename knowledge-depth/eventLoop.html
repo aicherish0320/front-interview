@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>事件循环</title>
+  </head>
+  <body>
+    <p>Event Loop</p>
+  </body>
+  <script>
+    // const p = document.createElement('p')
+    // p.innerHTML = 'new paragraph'
+    // document.body.appendChild(p)
+    // const list = document.getElementsByTagName('p')
+    // console.log('length----', list.length)
+    // console.log('start')
+    // // DOM 渲染之后
+    // setTimeout(() => {
+    //   const list = document.getElementsByTagName('p')
+    //   console.log('timeout length----', list.length)
+    //   alert('timeout')
+    // })
+    // // DOM 渲染之前
+    // Promise.resolve().then(() => {
+    //   const list = document.getElementsByTagName('p')
+    //   console.log('promise then length----', list.length)
+    //   alert('promise then')
+    // })
+    // console.log('end')
+
+    console.log('start')
+    // MacroTask
+    setTimeout(() => {
+      console.log('setTimeout')
+    })
+    // MicroTask
+    Promise.resolve().then(() => console.log('promise then'))
+    console.log('end')
+  </script>
+</html>
