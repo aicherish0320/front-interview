@@ -43,3 +43,20 @@
   - 宏任务：setTimeout setInterval 网络请求
   - 微任务：promise async/await mutationObserver
   - 微任务在下一轮 DOM 渲染之前执行，宏任务在之后执行
+- NodeJS 异步
+  - NodeJS 同样使用 ES 语法，也是单线程，也需要异步
+  - 异步任务也分：宏任务 + 微任务
+  - 但是，它的宏任务和微任务，分不同类型，有不同优先级
+- NodeJS 宏任务类型和优先级
+  - Timers - setTimeout setInterval
+  - I/O callbacks - 处理网络、流、TCP 的错误回调
+  - Idle、prepare - 闲置状态 （NodeJS 内部使用）
+  - Poll 轮询 - 执行 poll 中的 I/O 队列
+  - Check 检查 - 存储 setImmediate 回调
+  - Close callbacks - 关闭回调，如 socket.on('close')
+  - promise async/await process.nextTick
+  - process.nextTick 优先级最高
+- NodeJS Event Loop
+  - 执行同步代码
+  - 执行微任务 （process.nextTick 优先级更高）
+  - 按顺序执行 6 个类型的宏任务
