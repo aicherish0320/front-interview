@@ -8,6 +8,19 @@
   </head>
   <body></body>
   <script>
+    console.log('global begin')
+    setTimeout(() => {
+      console.log('timer1 invoke')
+    }, 1800)
+    setTimeout(() => {
+      console.log('timer2 invoke')
+      setTimeout(() => {
+        console.log('inner invoke')
+      }, 1000)
+    }, 1000)
+    console.log('global end')
+  </script>
+  <script>
     /*
       异步编程
       单线程 JavaScript 异步方案
@@ -23,6 +36,12 @@
       # 同步模式
       代码中的任务依次执行，后一个任务必须要等前一个任务执行完毕才能去执行，代码的执行顺序
         和代码的书写顺序一致
+      # 异步任务
+      不会去等待这个任务的结束才开始下一个任务，开启后就立即往后执行下一个任务
+        后续逻辑一般会通过回调函数的方式定义
+      如果没有异步任务，单线程的 JavaScript 语言就无法同时处理大量的耗时任务
+      代码执行顺序混乱
+      运行环境提供的API是以同步或异步模式的方式工作
     */
   </script>
 </html>
