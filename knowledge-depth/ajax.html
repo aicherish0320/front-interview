@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJAX</title>
+  </head>
+  <body>
+    <h1>AJAX</h1>
+  </body>
+  <script>
+    ;(function () {
+      const httpRequest = new XMLHttpRequest()
+      httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+            console.log(httpRequest.response)
+          } else {
+            console.log('error')
+          }
+        }
+      }
+      httpRequest.open('GET', 'https://api.github.com/users/0320')
+      httpRequest.send()
+    })()
+  </script>
+</html>
