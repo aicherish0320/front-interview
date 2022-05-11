@@ -43,41 +43,31 @@ class AcPromise {
     }
   }
   then(successCallback, failCallback) {
-    if (this.status === FULFILLED) {
-      successCallback(this.value)
-    } else if (this.status === REJECTED) {
-      failCallback(this.reason)
-    } else {
-      // pending
-      this.successCallback.push(successCallback)
-      this.failCallback.push(failCallback)
-    }
+    let promise2 = new AcPromise((resolve, reject) => {
+      if (this.status === FULFILLED) {
+        let x = successCallback(this.value)
+        resolve(x)
+      } else if (this.status === REJECTED) {
+        failCallback(this.reason)
+      } else {
+        this.successCallback.push(successCallback)
+        this.failCallback.push(failCallback)
+      }
+    })
+
+    return promise2
   }
 }
 
 const promise = new AcPromise((resolve, reject) => {
-  // setTimeout(() => {
-  //   // resolve('success')
-  //   reject('failure')
-  // }, 2000)
   resolve('success')
-  // reject('failure')
 })
 
-promise.then(
-  (value) => {
+promise
+  .then((value) => {
     console.log(value)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
-
-promise.then(
-  (value) => {
+    return 'promise'
+  })
+  .then((value) => {
     console.log(value)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
+  })
