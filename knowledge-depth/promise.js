@@ -46,7 +46,7 @@ class AcPromise {
     let promise2 = new AcPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         let x = successCallback(this.value)
-        resolve(x)
+        resolvePromise(x, resolve, reject)
       } else if (this.status === REJECTED) {
         failCallback(this.reason)
       } else {
@@ -59,6 +59,14 @@ class AcPromise {
   }
 }
 
+function resolvePromise(x, resolve, reject) {
+  if (x instanceof AcPromise) {
+    x.then(resolve, reject)
+  } else {
+    resolve(x)
+  }
+}
+
 const promise = new AcPromise((resolve, reject) => {
   resolve('success')
 })
@@ -66,8 +74,10 @@ const promise = new AcPromise((resolve, reject) => {
 promise
   .then((value) => {
     console.log(value)
-    return 'promise'
+    return new AcPromise((resolve, reject) => {
+      resolve('new Promise')
+    })
   })
-  .then((value) => {
-    console.log(value)
+  .then((res) => {
+    console.log(res)
   })
