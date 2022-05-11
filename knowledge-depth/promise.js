@@ -45,8 +45,10 @@ class AcPromise {
   then(successCallback, failCallback) {
     let promise2 = new AcPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
-        let x = successCallback(this.value)
-        resolvePromise(x, resolve, reject)
+        setTimeout(() => {
+          let x = successCallback(this.value)
+          resolvePromise(promise2, x, resolve, reject)
+        }, 0)
       } else if (this.status === REJECTED) {
         failCallback(this.reason)
       } else {
@@ -59,7 +61,12 @@ class AcPromise {
   }
 }
 
-function resolvePromise(x, resolve, reject) {
+function resolvePromise(promise2, x, resolve, reject) {
+  if (promise2 === x) {
+    return reject(
+      new TypeError('Chaining cycle detected for promise #<Promise>')
+    )
+  }
   if (x instanceof AcPromise) {
     x.then(resolve, reject)
   } else {
@@ -71,13 +78,13 @@ const promise = new AcPromise((resolve, reject) => {
   resolve('success')
 })
 
-promise
-  .then((value) => {
-    console.log(value)
-    return new AcPromise((resolve, reject) => {
-      resolve('new Promise')
-    })
-  })
-  .then((res) => {
-    console.log(res)
-  })
+const p1 = promise.then((value) => {
+  console.log(value)
+  return p1
+})
+p1.then(
+  () => {},
+  (reason) => {
+    console.log(reason.message)
+  }
+)
