@@ -99,6 +99,38 @@ class AcPromise {
 
     return promise2
   }
+  static all(arr) {
+    let result = []
+    let index = 0
+
+    return new AcPromise((resolve, reject) => {
+      function addData(key, value) {
+        result[key] = value
+        index++
+        console.log('index >>> ', index)
+
+        if (index === arr.length) {
+          resolve(result)
+        }
+      }
+
+      for (let i = 0; i < arr.length; i++) {
+        let current = arr[i]
+        if (current instanceof AcPromise) {
+          current.then(
+            (value) => {
+              addData(i, value)
+            },
+            (reason) => {
+              reject(reason)
+            }
+          )
+        } else {
+          addData(i, current)
+        }
+      }
+    })
+  }
 }
 
 function resolvePromise(promise2, x, resolve, reject) {
@@ -113,11 +145,17 @@ function resolvePromise(promise2, x, resolve, reject) {
     resolve(x)
   }
 }
-
+// ! Test
 const promise = new AcPromise((resolve, reject) => {
-  resolve('success')
+  setTimeout(() => {
+    resolve('setTimeout')
+  }, 1000)
 })
 
-promise.then().then((value) => {
-  console.log(value)
+const promise2 = new AcPromise((resolve, reject) => {
+  resolve(100)
+})
+
+AcPromise.all(['a', 'b', promise, promise2, 'c']).then((result) => {
+  console.log(result)
 })
