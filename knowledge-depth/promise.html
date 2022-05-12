@@ -8,18 +8,20 @@
   </head>
   <body></body>
   <script>
-    const promise = new Promise((resolve, reject) => {
+    const p1 = new Promise((resolve, reject) => {
+      resolve('p1')
+    })
+    const p2 = new Promise((resolve, reject) => {
       setTimeout(() => {
-        resolve('setTimeout')
+        resolve('p2')
       }, 1000)
     })
 
-    const promise2 = new Promise((resolve, reject) => {
-      resolve(100)
-    })
-
-    Promise.all(['a', 'b', promise, promise2, 'c']).then((result) => {
-      console.log(result)
+    p1.finally(() => {
+      console.log('finally')
+      return p2
+    }).then((value) => {
+      console.log(value)
     })
   </script>
 </html>
