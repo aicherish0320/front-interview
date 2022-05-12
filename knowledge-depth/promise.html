@@ -12,14 +12,11 @@
       resolve(100)
     })
 
-    let p1 = promise.then(() => {
-      return p1
-    })
-    p1.then(
-      () => {},
-      (reason) => {
-        console.log(reason.message)
-      }
-    )
+    promise
+      .then()
+      .then()
+      .then((value) => {
+        console.log(value)
+      })
   </script>
 </html>

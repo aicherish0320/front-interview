@@ -47,6 +47,13 @@ class AcPromise {
     }
   }
   then(successCallback, failCallback) {
+    successCallback = successCallback ? successCallback : (value) => value
+    failCallback = failCallback
+      ? failCallback
+      : (reason) => {
+          throw reason
+        }
+
     let promise2 = new AcPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         setTimeout(() => {
@@ -111,21 +118,6 @@ const promise = new AcPromise((resolve, reject) => {
   resolve('success')
 })
 
-const p1 = promise
-  .then(
-    (value) => {
-      throw new Error('then error')
-      console.log(value)
-    },
-    (reason) => {
-      console.log(reason)
-    }
-  )
-  .then(
-    (value) => {
-      console.log(value)
-    },
-    (reason) => {
-      console.log(reason)
-    }
-  )
+promise.then().then((value) => {
+  console.log(value)
+})
