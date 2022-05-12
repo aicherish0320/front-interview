@@ -47,6 +47,7 @@ class AcPromise {
     }
   }
   then(successCallback, failCallback) {
+    debugger
     successCallback = successCallback ? successCallback : (value) => value
     failCallback = failCallback
       ? failCallback
@@ -87,7 +88,7 @@ class AcPromise {
         this.failCallback.push(() => {
           setTimeout(() => {
             try {
-              let x = failCallback(this.value)
+              let x = failCallback(this.reason)
               resolvePromise(promise2, x, resolve, reject)
             } catch (error) {
               reject(error)
