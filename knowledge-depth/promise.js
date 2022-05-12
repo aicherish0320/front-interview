@@ -15,7 +15,11 @@ const REJECTED = 'rejected'
 
 class AcPromise {
   constructor(executor) {
-    executor(this.resolve, this.reject)
+    try {
+      executor(this.resolve, this.reject)
+    } catch (error) {
+      this.reject(error)
+    }
   }
   status = PENDING
   value = undefined
@@ -29,7 +33,7 @@ class AcPromise {
     this.status = FULFILLED
     this.value = value
     while (this.successCallback.length) {
-      this.successCallback.shift()(this.value)
+      this.successCallback.shift()()
     }
   }
   reject = (reason) => {
@@ -39,21 +43,50 @@ class AcPromise {
     this.status = REJECTED
     this.reason = reason
     while (this.failCallback.length) {
-      this.failCallback.shift()(this.reason)
+      this.failCallback.shift()()
     }
   }
   then(successCallback, failCallback) {
     let promise2 = new AcPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         setTimeout(() => {
-          let x = successCallback(this.value)
-          resolvePromise(promise2, x, resolve, reject)
+          try {
+            let x = successCallback(this.value)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
         }, 0)
       } else if (this.status === REJECTED) {
-        failCallback(this.reason)
+        setTimeout(() => {
+          try {
+            let x = failCallback(this.reason)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
+        }, 0)
       } else {
-        this.successCallback.push(successCallback)
-        this.failCallback.push(failCallback)
+        this.successCallback.push(() => {
+          setTimeout(() => {
+            try {
+              let x = successCallback(this.value)
+              resolvePromise(promise2, x, resolve, reject)
+            } catch (error) {
+              reject(error)
+            }
+          }, 0)
+        })
+        this.failCallback.push(() => {
+          setTimeout(() => {
+            try {
+              let x = failCallback(this.value)
+              resolvePromise(promise2, x, resolve, reject)
+            } catch (error) {
+              reject(error)
+            }
+          }, 0)
+        })
       }
     })
 
@@ -78,13 +111,21 @@ const promise = new AcPromise((resolve, reject) => {
   resolve('success')
 })
 
-const p1 = promise.then((value) => {
-  console.log(value)
-  return p1
-})
-p1.then(
-  () => {},
-  (reason) => {
-    console.log(reason.message)
-  }
-)
+const p1 = promise
+  .then(
+    (value) => {
+      throw new Error('then error')
+      console.log(value)
+    },
+    (reason) => {
+      console.log(reason)
+    }
+  )
+  .then(
+    (value) => {
+      console.log(value)
+    },
+    (reason) => {
+      console.log(reason)
+    }
+  )
