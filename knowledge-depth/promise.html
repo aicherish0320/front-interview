@@ -8,20 +8,17 @@
   </head>
   <body></body>
   <script>
-    const p1 = new Promise((resolve, reject) => {
-      resolve('p1')
-    })
-    const p2 = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('p2')
-      }, 1000)
+    const promise = new Promise((resolve, reject) => {
+      // resolve('p1')
+      reject('error')
     })
 
-    p1.finally(() => {
-      console.log('finally')
-      return p2
-    }).then((value) => {
-      console.log(value)
-    })
+    promise
+      .then((value) => {
+        console.log(value)
+      })
+      .catch((reason) => {
+        console.log(reason)
+      })
   </script>
 </html>

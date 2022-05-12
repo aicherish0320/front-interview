@@ -99,6 +99,9 @@ class AcPromise {
 
     return promise2
   }
+  catch(failCallback) {
+    return this.then(undefined, failCallback)
+  }
   finally(callback) {
     return this.then(
       (value) => {
@@ -168,24 +171,14 @@ function resolvePromise(promise2, x, resolve, reject) {
 }
 // ! Test
 const promise = new AcPromise((resolve, reject) => {
-  resolve('resolve')
-})
-const p2 = new AcPromise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('p2')
-  }, 1000)
+  // resolve('resolve')
+  reject('error')
 })
 
 promise
-  .finally(() => {
-    console.log('finally')
-    return p2
+  .then((value) => {
+    console.log(value)
   })
-  .then(
-    (value) => {
-      console.log('value >>> ', value)
-    },
-    (reason) => {
-      console.log('reason >>> ', reason)
-    }
-  )
+  .catch((reason) => {
+    console.log(reason)
+  })
