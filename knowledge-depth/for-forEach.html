@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>for-forEach</title>
+  </head>
+  <body></body>
+  <script>
+    const arr = []
+    for (let i = 0; i < 1 * 10000; i++) {
+      arr.push(i)
+    }
+
+    const len = arr.length
+
+    console.time('for')
+    let n1 = 0
+    for (let i = 0; i < len; i++) {
+      n1++
+    }
+    console.timeEnd('for')
+
+    console.time('forEach')
+    let n2 = 0
+    arr.forEach((item) => {
+      n2++
+    })
+    console.timeEnd('forEach')
+
+    /*
+      for 更快
+      forEach 每次都要创建一个函数来调用，而 for 不会创建函数
+      函数需要独立的作用域，会有额外的开销
+
+      循环和递归
+      递归也是每次都会创建函数
+    */
+  </script>
+</html>
