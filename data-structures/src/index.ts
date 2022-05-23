@@ -45,7 +45,39 @@ const tree: ITreeNode = {
     }
   }
 }
+/**
+ * 先序遍历
+ * @param node tree
+ */
+const preOrderTraverse = (node: ITreeNode) => {
+  if (!node) return
+  console.log(node.value)
+  node.left && preOrderTraverse(node.left)
+  node.right && preOrderTraverse(node.right)
+}
 
-const preOrderTraverse = (node: ITreeNode) => {}
+// preOrderTraverse(tree)
+
+/**
+ * 中序遍历
+ * @param node tree
+ */
+const inOrderTraverse = (node: ITreeNode) => {
+  if (!node) return
+  node.left && inOrderTraverse(node.left)
+  console.log(node.value)
+  node.right && inOrderTraverse(node.right)
+}
+
+// inOrderTraverse(tree)
+
+const postOrderTraverse = (node: ITreeNode) => {
+  if (!node) return
+  node.left && postOrderTraverse(node.left)
+  node.right && postOrderTraverse(node.right)
+  console.log(node.value)
+}
+
+postOrderTraverse(tree)
 
 export {}
