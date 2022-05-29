@@ -4,15 +4,28 @@
  * fn = fn(n - 1) + fn(n - 2)
  */
 
-// 递归 - 大量的重复计算
-// 时间复杂度：O(2^n)
+// 不用递归 用循环
+// 记录中间结果
+// 时间复杂度 O(n)
 const fibonacci = (i: number): number => {
   if (i <= 1 || i === 2) {
     return 1
   }
-  return fibonacci(i - 1) + fibonacci(i - 2)
+  let n1 = 1
+  let n2 = 1
+  let ret = 0
+
+  for (let j = 2; j < i; j++) {
+    ret = n1 + n2
+    n2 = n1
+    n1 = ret
+  }
+
+  return ret
 }
 
+console.log('fibonacci(3) >>> ', fibonacci(3))
+console.log('fibonacci(4) >>> ', fibonacci(4))
 console.log('fibonacci(10) >>> ', fibonacci(10))
 
 export {}
