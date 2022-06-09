@@ -20,3 +20,15 @@
 - cookie + session 是常见登录验证解决方案
 
 **withCredentials**，前后端都设置
+
+## token VS cookie
+
+- cookie 是 HTTP 规范，而 token 是自定义传递
+- cookie 会默认被浏览器存储，而 token 需自己存储
+- token 默认没有跨域限制
+
+### JWT JSON Web Token
+
+- 前端发起登录，后端验证成功之后，返回一个加密的 token
+- 前端自行存储这个 token（其中包含了用户信息，加密了）
+- 以后访问服务器接口，都带着这个 token，作为用户信息
