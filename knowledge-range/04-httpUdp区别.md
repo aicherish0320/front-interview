@@ -37,3 +37,10 @@
 - 可压缩 header ，减少体积
 - 多路复用，一次 TCP 连接中可以多个 HTTP 并行请求
 - 服务端推送
+
+# 什么是 HTTPS 中间人攻击？如何预防？
+
+## HTTPS 加密传输
+
+- HTTP 明文传输
+- HTTPS 加密传输 HTTP + TLS/SSl
