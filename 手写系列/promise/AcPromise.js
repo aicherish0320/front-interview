@@ -33,7 +33,14 @@ class AcPromise {
     const promise2 = new AcPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         const x = successCallback(this.value)
-        resolve(x)
+        // 判断 x 的值是普通值还是 promise 对象
+        // 如果是普通值 直接调用 resolve
+        // 如果是 promise 对象，查看 promise 对象返回的结果
+        // 再根据 promise 对象返回的结果，决定调用 resolve，还是调用 reject
+        // resolve(x)
+        setTimeout(() => {
+          resolvePromise(promise2, x, resolve, reject)
+        })
       } else if (this.status === REJECTED) {
         failCallback(this.reason)
       } else {
@@ -42,6 +49,21 @@ class AcPromise {
       }
     })
     return promise2
+  }
+}
+
+function resolvePromise(promise2, x, resolve, reject) {
+  if (x instanceof AcPromise) {
+    x.then(
+      (value) => {
+        resolve(value)
+      },
+      (reason) => {
+        reject(reason)
+      }
+    )
+  } else {
+    resolve(x)
   }
 }
 
