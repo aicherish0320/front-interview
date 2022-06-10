@@ -90,6 +90,16 @@ class AcPromise {
     })
     return promise2
   }
+  finally(callback) {
+    return this.then(
+      (value) => {
+        return AcPromise.resolve(callback()).then(() => value)
+      },
+      (reason) => {
+        return AcPromise.resolve(callback()).then(() => reason)
+      }
+    )
+  }
   static all(array) {
     return new AcPromise((resolve, reject) => {
       let result = []
