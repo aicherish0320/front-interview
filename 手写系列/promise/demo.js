@@ -8,42 +8,26 @@
     reject: rejected
   4. then 方法内部做的事情就是判断状态，成功，调用成功的回调函数，失败，则调用失败的回调函数
   5. then 成功回调有一个参数，表示成功之后的值，then 失败回调有一个参数，表示失败的原因
+  6. promise 链式调用
  */
 
 const AcPromise = require('./AcPromise')
 
-const promise = new AcPromise((resolve, reject) => {
-  // resolve('success')
+const promise = new Promise((resolve, reject) => {
+  resolve('success')
   // reject('error')
-  setTimeout(() => {
-    // resolve('success')
-    reject('error')
-  }, 1000)
+  // setTimeout(() => {
+  //   resolve('success')
+  //   // reject('error')
+  // }, 1000)
 })
 
-promise.then(
-  (value) => {
+promise
+  .then((value) => {
     console.log(value)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
-
-promise.then(
-  (value) => {
-    console.log(value)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
-
-promise.then(
-  (value) => {
-    console.log(value)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
+    return 100
+  })
+  .then((value2) => {
+    // value2 是上一个 promise 回调函数的返回值
+    console.log(value2)
+  })
