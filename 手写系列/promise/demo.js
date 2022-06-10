@@ -13,11 +13,31 @@
 const AcPromise = require('./AcPromise')
 
 const promise = new AcPromise((resolve, reject) => {
+  // resolve('success')
+  // reject('error')
   setTimeout(() => {
     // resolve('success')
     reject('error')
   }, 1000)
 })
+
+promise.then(
+  (value) => {
+    console.log(value)
+  },
+  (reason) => {
+    console.log(reason)
+  }
+)
+
+promise.then(
+  (value) => {
+    console.log(value)
+  },
+  (reason) => {
+    console.log(reason)
+  }
+)
 
 promise.then(
   (value) => {
