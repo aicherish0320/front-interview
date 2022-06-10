@@ -15,18 +15,15 @@ const AcPromise = require('./AcPromise')
 
 const promise = new AcPromise((resolve, reject) => {
   setTimeout(() => {
-    resolve(100)
+    reject(100)
   }, 2000)
 })
 
-promise
-  .then(
-    (value) => {
-      console.log(value)
-      return 000
-    },
-    () => {}
-  )
-  .then((value) => {
+promise.then().then(
+  (value) => {
     console.log(value)
-  })
+  },
+  (reason) => {
+    console.log(reason)
+  }
+)

@@ -34,6 +34,13 @@ class AcPromise {
     }
   }
   then(successCallback, failCallback) {
+    successCallback = successCallback ? successCallback : (value) => value
+    failCallback = failCallback
+      ? failCallback
+      : (reason) => {
+          throw reason
+        }
+
     const promise2 = new AcPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         setTimeout(() => {
