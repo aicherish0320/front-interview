@@ -13,8 +13,10 @@
 const AcPromise = require('./AcPromise')
 
 const promise = new AcPromise((resolve, reject) => {
-  resolve('success')
-  reject('error')
+  setTimeout(() => {
+    // resolve('success')
+    reject('error')
+  }, 1000)
 })
 
 promise.then(
