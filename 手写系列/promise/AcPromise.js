@@ -116,6 +116,12 @@ class AcPromise {
       }
     })
   }
+  static resolve(value) {
+    if (value instanceof AcPromise) {
+      return value
+    }
+    return new AcPromise((resolve) => resolve(value))
+  }
 }
 
 function resolvePromise(promise2, x, resolve, reject) {

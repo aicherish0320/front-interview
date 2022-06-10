@@ -14,7 +14,8 @@
 const AcPromise = require('./AcPromise')
 
 const promise1 = new AcPromise((resolve, reject) => {
-  resolve(100)
+  // resolve(100)
+  reject('error')
 })
 
 const promise2 = new AcPromise((resolve, reject) => {
@@ -23,11 +24,6 @@ const promise2 = new AcPromise((resolve, reject) => {
   }, 2000)
 })
 
-AcPromise.all(['1', '2', promise1, promise2, 'c']).then(
-  (result) => {
-    console.log(result)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
+AcPromise.resolve(100).then((value) => {
+  console.log(value)
+})
