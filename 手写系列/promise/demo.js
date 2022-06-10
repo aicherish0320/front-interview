@@ -14,28 +14,19 @@
 const AcPromise = require('./AcPromise')
 
 const promise = new AcPromise((resolve, reject) => {
-  resolve('success')
-  // reject('error')
-  // setTimeout(() => {
-  //   resolve('success')
-  //   // reject('error')
-  // }, 1000)
+  setTimeout(() => {
+    resolve(100)
+  }, 2000)
 })
 
-const p1 = promise.then((value) => {
-  console.log(value)
-  // return new AcPromise((resolve, reject) => {
-  //   resolve(300)
-  // })
-  return p1
-})
-
-p1.then(
-  (value2) => {
-    // value2 是上一个 promise 回调函数的返回值
-    console.log(value2)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
+promise
+  .then(
+    (value) => {
+      console.log(value)
+      return 000
+    },
+    () => {}
+  )
+  .then((value) => {
+    console.log(value)
+  })

@@ -4,7 +4,11 @@ const REJECTED = 'rejected'
 
 class AcPromise {
   constructor(executor) {
-    executor(this.resolve, this.reject)
+    try {
+      executor(this.resolve, this.reject)
+    } catch (error) {
+      this.reject(error)
+    }
   }
   status = PENDING
   value = undefined
@@ -17,7 +21,7 @@ class AcPromise {
     this.value = value
 
     while (this.successCallback.length) {
-      this.successCallback.shift()(this.value)
+      this.successCallback.shift()()
     }
   }
   reject = (reason) => {
@@ -26,26 +30,55 @@ class AcPromise {
     this.reason = reason
 
     while (this.failCallback.length) {
-      this.failCallback.shift()(this.reason)
+      this.failCallback.shift()()
     }
   }
   then(successCallback, failCallback) {
     const promise2 = new AcPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         setTimeout(() => {
-          const x = successCallback(this.value)
-          // 判断 x 的值是普通值还是 promise 对象
-          // 如果是普通值 直接调用 resolve
-          // 如果是 promise 对象，查看 promise 对象返回的结果
-          // 再根据 promise 对象返回的结果，决定调用 resolve，还是调用 reject
-          // resolve(x)
-          resolvePromise(promise2, x, resolve, reject)
+          try {
+            const x = successCallback(this.value)
+            // 判断 x 的值是普通值还是 promise 对象
+            // 如果是普通值 直接调用 resolve
+            // 如果是 promise 对象，查看 promise 对象返回的结果
+            // 再根据 promise 对象返回的结果，决定调用 resolve，还是调用 reject
+            // resolve(x)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
         })
       } else if (this.status === REJECTED) {
-        failCallback(this.reason)
+        setTimeout(() => {
+          try {
+            const x = failCallback(this.reason)
+            resolvePromise(promise2, x, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
+        })
       } else {
-        this.successCallback.push(successCallback)
-        this.failCallback.push(failCallback)
+        this.successCallback.push(() => {
+          setTimeout(() => {
+            try {
+              const x = successCallback(this.value)
+              resolvePromise(promise2, x, resolve, reject)
+            } catch (error) {
+              reject(error)
+            }
+          })
+        })
+        this.failCallback.push(() => {
+          setTimeout(() => {
+            try {
+              const x = failCallback(this.reason)
+              resolvePromise(promise2, x, resolve, reject)
+            } catch (error) {
+              reject(error)
+            }
+          })
+        })
       }
     })
     return promise2
