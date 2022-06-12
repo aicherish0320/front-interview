@@ -8,20 +8,29 @@
     reject: rejected
   4. then 方法内部做的事情就是判断状态，成功，调用成功的回调函数，失败，则调用失败的回调函数
   5. then 成功回调有一个参数，表示成功之后的值，then 失败回调有一个参数，表示失败的原因
+  6. promise 链式调用，then 方法的链式调用 不能返回自身的 promise
  */
 
 const AcPromise = require('./AcPromise')
 
-const promise = new AcPromise((resolve, reject) => {
-  resolve('success')
+const promise1 = new AcPromise((resolve, reject) => {
   reject('error')
 })
 
-promise.then(
-  (value) => {
-    console.log(value)
-  },
-  (reason) => {
-    console.log(reason)
-  }
-)
+promise1
+  .finally(() => {
+    console.log('finally')
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(90)
+      }, 1000)
+    })
+  })
+  .then(
+    (value) => {
+      console.log(value)
+    },
+    (reason) => {
+      console.log(reason)
+    }
+  )
