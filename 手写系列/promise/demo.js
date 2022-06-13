@@ -13,24 +13,23 @@
 
 const AcPromise = require('./AcPromise')
 
-const promise1 = new AcPromise((resolve, reject) => {
-  reject('error')
+const promise = new AcPromise((resolve, reject) => {
+  setTimeout(() => {
+    // reject('error')
+    resolve('success')
+  }, 1000)
 })
 
-promise1
-  .finally(() => {
-    console.log('finally')
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(90)
-      }, 1000)
-    })
-  })
+promise
   .then(
     (value) => {
-      console.log(value)
+      console.log('value >>> ', value)
+      return '100'
     },
     (reason) => {
-      console.log(reason)
+      console.log('reason >>> ', reason)
     }
   )
+  .then((value) => {
+    console.log('value2 >>> ', value)
+  })
