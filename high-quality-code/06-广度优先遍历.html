@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>深度优先遍历DOM树</title>
+  </head>
+  <body>
+    <div id="app">
+      <ul>
+        <li>a</li>
+        <li>b</li>
+      </ul>
+      <div>
+        <p>a</p>
+        <section>b</section>
+      </div>
+    </div>
+  </body>
+  <script>
+    function visitNode(node) {
+      if (node instanceof Comment) {
+        console.log('注释节点 >>> ', node.textContent)
+      }
+      if (node instanceof Text) {
+        const textContent = node.textContent.trim()
+        if (textContent) {
+          console.log('文本节点 >>> ', node.textContent)
+        }
+      }
+      if (node instanceof HTMLElement) {
+        console.log('元素节点 >>> ', node.tagName)
+      }
+    }
+
+    const app = document.querySelector('#app')
+    const children = app.children
+
+    function breadthFirstTraverse(root) {
+      const queue = [root]
+
+      while (queue.length) {
+        const cur = queue.pop()
+        if (cur == null) break
+        visitNode(cur)
+
+        const childNodes = cur.childNodes
+        if (childNodes.length) {
+          childNodes.forEach((c) => {
+            queue.unshift(c)
+          })
+        }
+      }
+    }
+
+    breadthFirstTraverse(app)
+  </script>
+</html>
