@@ -13,10 +13,11 @@ const Person = (fullName) => {
 
 const person = new Person('aicherish')
 
-const acNew = (ctor) => {
+const acNew = (ctor, ...args) => {
   // 创建一个实例 返回
-  const obj = Object.create()
+  const obj = Object.create(ctor.prototype)
   // this 指向当前构造函数
+  ctor.apply(this, args)
 
   return obj
 }
