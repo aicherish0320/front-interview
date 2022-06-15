@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>深度优先遍历DOM树</title>
+  </head>
+  <body>
+    <div id="app">
+      <section class="body">
+        <div>
+          <p>
+            <i>Hello</i>
+            <b>world</b>
+          </p>
+          <ul>
+            <li>Hello</li>
+            <li>world</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </body>
+  <script>
+    /**
+     * 非递归实现深度优先遍历
+     * 可以不用递归，用栈
+     * 因为递归本身就是栈
+     */
+    function visitNode(node) {
+      if (node instanceof Comment) {
+        console.log('注释节点 >>> ', node.textContent)
+      }
+      if (node instanceof Text) {
+        const textContent = node.textContent.trim()
+        if (textContent) {
+          console.log('文本节点 >>> ', node.textContent)
+        }
+      }
+      if (node instanceof HTMLElement) {
+        console.log('元素节点 >>> ', node.tagName)
+      }
+    }
+
+    const app = document.querySelector('#app')
+    const children = app.children
+
+    function depthFirstTraverse(root) {
+      const stack = []
+      stack.push(root)
+
+      while (stack.length) {
+        const curNode = stack.pop()
+        if (!curNode) break
+
+        visitNode(curNode)
+
+        const childNodes = curNode.childNodes
+        if (childNodes.length) {
+          Array.from(childNodes)
+            .reverse()
+            .forEach((c) => {
+              stack.push(c)
+            })
+        }
+      }
+    }
+
+    depthFirstTraverse(app)
+  </script>
+</html>
