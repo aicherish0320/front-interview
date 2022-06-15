@@ -26,3 +26,5 @@
     - 计算各个 DOM 的尺寸、定位，最后绘制到页面
     - 遇到 JS 可能会执行
     - 异步 CSS 、图片加载，可能会触发重新渲染
+
+https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work
