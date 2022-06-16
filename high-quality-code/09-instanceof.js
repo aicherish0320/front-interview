@@ -35,4 +35,9 @@ const acInstanceof = (inst, ctor) => {
 
   return false
 }
+
 console.log(acInstanceof(p1, Person))
+console.log(acInstanceof(1, Person))
+console.log(acInstanceof(null, Person))
+console.log(acInstanceof([1, 2, 3], Person))
+console.log(acInstanceof([1, 2, 3], Array))
