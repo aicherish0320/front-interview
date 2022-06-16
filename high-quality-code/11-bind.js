@@ -6,8 +6,8 @@
  */
 
 Function.prototype.acBind = function (obj, ...args) {
-  const fn = () => {
-    this.call(obj, ...args)
+  const fn = (...arg) => {
+    this.call(obj, ...arg, ...args)
   }
 
   return fn
@@ -21,6 +21,6 @@ const obj = {
   message: 'Hello'
 }
 
-const newFn = fn.acBind(obj, 1, 2)
+const newFn = fn.acBind(obj, 1)
 
-newFn()
+newFn(2)

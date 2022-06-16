@@ -3,9 +3,9 @@
  */
 
 const curry = (fn) => {
-  const newFn = (...args) => {
+  function newFn(...args) {
     if (fn.length === args.length) {
-      return fn(...args)
+      return fn.apply(this, args)
     } else {
       return (...arg) => {
         return newFn(...arg, ...args)
