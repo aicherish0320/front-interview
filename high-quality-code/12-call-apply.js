@@ -8,18 +8,23 @@
  */
 
 Function.prototype.acCall = function (context, ...args) {
-  const fn = this
-  const obj = {
-    ...context,
-    args,
-    fn
-  }
-  return obj.fn(...args)
+  // null undefined
+  if (!context) context = globalThis
+  // 非对象
+  if (typeof context !== 'object') context = new Object(context)
+
+  const fnKey = Symbol()
+  context[fnKey] = this
+
+  const ret = context[fnKey](...args)
+
+  delete context[fnKey] // 清理调 fn，防止污染
+
+  return ret
 }
 Function.prototype.acApply = function () {}
 
 function fn(a, b) {
-  console.log(this)
   console.log(this.foo, a + b)
 }
 const obj = {
