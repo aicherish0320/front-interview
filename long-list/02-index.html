@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul id="container"></ul>
+    <script>
+      /**
+       * 分片加载 会导致页面 dom 元素过多，造成页面的卡顿
+       * 虚拟列表优化 只渲染当前的可视区域
+       */
+
+      const total = 100000
+      const container = document.querySelector('#container')
+      let index = 0
+      let id = 0
+
+      function load() {
+        index += 20
+        if (index < total) {
+          // setTimeout 宏任务 requestAnimationFrame 也是一个宏任务 可以配合浏览器刷新频率
+          // 分片渲染 因为定时器是一个宏任务 会等待 UI 渲染完成后执行
+          requestAnimationFrame(() => {
+            const fragment = document.createDocumentFragment()
+            for (let i = 0; i < 20; i++) {
+              // 使用 文档碎片 fragment
+              const li = document.createElement('li')
+              li.innerHTML = id++
+              fragment.appendChild(li)
+            }
+            container.appendChild(fragment)
+            load()
+          })
+        }
+      }
+
+      load()
+    </script>
+  </body>
+</html>
