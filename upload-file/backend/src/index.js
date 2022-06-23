@@ -30,7 +30,7 @@ router.post('/upload_file', async (ctx) => {
 
   await fse.move(file.filepath, target)
 
-  ctx.body = `${target}/${originalFilename}`
+  ctx.body = target
 })
 
 app.use(router.routes()).use(router.allowedMethods())
