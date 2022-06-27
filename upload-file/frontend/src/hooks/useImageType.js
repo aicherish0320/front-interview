@@ -1,7 +1,4 @@
 export const useImageType = async (file) => {
-  // const isImage = async (file) => {
-
-  // }
   const isGif = async (file) => {
     // '47 49 46 38 39 61'(GIF89a) 或者 '47 49 46 38 37 61'(GIF87a)
     const ret = await blobToString(file.slice(0, 6))

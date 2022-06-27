@@ -2,10 +2,14 @@
 import { onMounted, ref } from 'vue'
 import { useUploadFile } from './hooks/useUploadFile'
 import { useImageType } from './hooks/useImageType'
+
+const CHUNK_SIZE = 1024 * 50
+
 // 文件
 const file = ref(null)
 // 进度条
 const uploadProgress = ref(0)
+const hashProgress = ref(0)
 // 拖拽框
 const dragRef = ref(null)
 
@@ -16,12 +20,47 @@ const handleFileChange = (e) => {
   }
 }
 
-const uploadFile = async () => {
-  const ret = await useImageType(file.value)
-  if (!ret) {
-    alert('上传文件格式不对')
-    return
+const createFileChunk = (file, size = CHUNK_SIZE) => {
+  const chunks = []
+  let cur = 0
+  while (cur < file.size) {
+    chunks.push({
+      index: cur,
+      file: file.slice(cur, cur + size)
+    })
+    cur += CHUNK_SIZE
   }
+  return chunks
+}
+
+const calculateHashWorker = (chunks) => {
+  return new Promise((resolve) => {
+    const worker = new Worker('/hash.js')
+    worker.postMessage({ chunks })
+    worker.onmessage = (e) => {
+      const { progress, hash } = e.data
+      console.log('progress >>> ', progress)
+      hashProgress.value = Number(progress.toFixed(2))
+      if (hash) {
+        resolve(hash)
+      }
+    }
+  })
+}
+const calculateHashIdle = () => {}
+
+const uploadFile = async () => {
+  // const ret = await useImageType(file.value)
+  // if (!ret) {
+  //   alert('上传文件格式不对')
+  //   return
+  // }
+
+  const chunks = createFileChunk(file.value)
+  const hash = await calculateHashWorker(chunks)
+  console.log('文件 hash >>> ', hash)
+  return
+
   const { progressVal } = await useUploadFile(file.value)
   uploadProgress.value = progressVal.value
 }
@@ -57,11 +96,22 @@ onMounted(() => {
       <input name="file" type="file" @change="handleFileChange" />
     </div>
     <button @click="uploadFile">上传</button>
-    <el-progress
-      :percentage="uploadProgress"
-      :text-inside="true"
-      :stroke-width="40"
-    />
+    <div>
+      <h3>上传进度</h3>
+      <el-progress
+        :percentage="uploadProgress"
+        :text-inside="true"
+        :stroke-width="40"
+      />
+    </div>
+    <div>
+      <h3>计算 hash 进度</h3>
+      <el-progress
+        :percentage="hashProgress"
+        :text-inside="true"
+        :stroke-width="40"
+      />
+    </div>
   </div>
 </template>
 

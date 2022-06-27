@@ -28,7 +28,9 @@ router.post('/upload_file', async (ctx) => {
   const originalFilename = file.originalFilename
   const target = path.resolve(__dirname, '../public/' + originalFilename)
 
-  await fse.move(file.filepath, target)
+  await fse.move(file.filepath, target, {
+    overwrite: true
+  })
 
   ctx.body = target
 })
