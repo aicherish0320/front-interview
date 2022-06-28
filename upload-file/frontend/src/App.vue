@@ -1,16 +1,19 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useUploadFile } from './hooks/useUploadFile'
 import { useImageType } from './hooks/useImageType'
 import SparkMD5 from 'spark-md5'
+import axios from 'axios'
 
 const CHUNK_SIZE = 1024 * 50
 
 // 文件
 const file = ref(null)
 // 进度条
-const uploadProgress = ref(0)
+// const uploadProgress = ref(0)
 const hashProgress = ref(0)
+// 分片数据
+const chunks = ref([])
 // 拖拽框
 const dragRef = ref(null)
 
@@ -22,22 +25,20 @@ const handleFileChange = (e) => {
 }
 
 const createFileChunk = (file, size = CHUNK_SIZE) => {
-  const chunks = []
   let cur = 0
   while (cur < file.size) {
-    chunks.push({
+    chunks.value.push({
       index: cur,
       file: file.slice(cur, cur + size)
     })
     cur += CHUNK_SIZE
   }
-  return chunks
 }
 
 const calculateHashWorker = (chunks) => {
   return new Promise((resolve) => {
     const worker = new Worker('/hash.js')
-    worker.postMessage({ chunks })
+    worker.postMessage({ chunks: chunks.value })
     worker.onmessage = (e) => {
       const { progress, hash } = e.data
       console.log('progress >>> ', progress)
@@ -92,15 +93,43 @@ const uploadFile = async () => {
   //   return
   // }
 
-  const chunks = createFileChunk(file.value)
-  // const hash = await calculateHashWorker(chunks)
+  createFileChunk(file.value)
+  // const hash = await calculateHashWorker(chunks.value)
   // 023124c075fc91d598eac7bb0ad0bde9
-  const hash = await calculateHashIdle(chunks)
-  console.log('文件 hash >>> ', hash)
-  return
+  const hash = await calculateHashIdle(chunks.value)
 
-  const { progressVal } = await useUploadFile(file.value)
-  uploadProgress.value = progressVal.value
+  chunks.value = chunks.value.map((chunk, index) => ({
+    hash,
+    name: hash + '-' + index,
+    index,
+    chunk: chunk.file
+  }))
+  await uploadChunks(chunks.value)
+  console.log('chunks >>> ', chunks.value)
+  // const { progressVal } = await useUploadFile(file.value)
+  // uploadProgress.value = progressVal.value
+}
+
+const uploadChunks = async (chunks) => {
+  const requests = chunks
+    .map((chunk, index) => {
+      const form = new FormData()
+      form.append('chunk', chunk.chunk)
+      form.append('hash', chunk.hash)
+      form.append('name', chunk.name)
+      return form
+    })
+    .map((form, index) =>
+      axios.post('http://localhost:3301/upload_file', form, {
+        onUploadProgress: (progress) => {
+          chunks[index].progress = Number(
+            ((progress.loaded / progress.total) * 100).toFixed(2)
+          )
+        }
+      })
+    )
+
+  await Promise.all(requests)
 }
 
 const bindEvents = () => {
@@ -126,6 +155,19 @@ const bindEvents = () => {
 onMounted(() => {
   bindEvents()
 })
+
+const cubeWidth = computed(() => {
+  return Math.ceil(Math.sqrt(chunks.value.length)) * 36
+})
+const uploadProgress = computed(() => {
+  if (!file.value || chunks.value.length) {
+    return 0
+  }
+  const loaded = chunks
+    .map((item) => item.chunk.size * item.progress)
+    .reduce((acc, cur) => acc + cur, 0)
+  return parseInt(((loaded * 100) / file.size).toFixed(2))
+})
 </script>
 
 <template>
@@ -134,14 +176,14 @@ onMounted(() => {
       <input name="file" type="file" @change="handleFileChange" />
     </div>
     <button @click="uploadFile">上传</button>
-    <div>
+    <!-- <div>
       <h3>上传进度</h3>
       <el-progress
         :percentage="uploadProgress"
         :text-inside="true"
         :stroke-width="40"
       />
-    </div>
+    </div> -->
     <div>
       <h3>计算 hash 进度</h3>
       <el-progress
@@ -149,6 +191,22 @@ onMounted(() => {
         :text-inside="true"
         :stroke-width="40"
       />
+    </div>
+    <div>
+      <div class="cube-container" :style="{ width: cubeWidth + 'px' }">
+        <div class="cube" v-for="chunk in chunks" :key="chunk.name">
+          <div
+            :class="{
+              uploading: chunk.progress > 0 && chunk.progress < 100,
+              success: chunk.progress === 100,
+              error: chunk.progress < 0
+            }"
+            :style="{ height: chunk.progress + '%' }"
+          >
+            <b v-if="chunk.progress > 0 && chunk.progress < 100">loading</b>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -160,5 +218,24 @@ onMounted(() => {
   height: 200px;
   line-height: 100px;
   text-align: center;
+}
+.cube-container {
+}
+.cube-container .cube {
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
+  border: 1px solid red;
+  background: #eee;
+  float: left;
+}
+.cube-container .cube .success {
+  background: green;
+}
+.cube-container .cube .error {
+  background: red;
+}
+.cube-container .cube .uploading {
+  background: blue;
 }
 </style>

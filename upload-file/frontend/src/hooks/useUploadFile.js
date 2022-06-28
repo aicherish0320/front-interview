@@ -8,7 +8,7 @@ export const useUploadFile = async (file) => {
 
   const progressVal = ref(0)
 
-  await axios.post('http://localhost:3001/upload_file', form, {
+  await axios.post('http://localhost:3301/upload_file', form, {
     onUploadProgress: (progress) => {
       progressVal.value = Number(
         ((progress.loaded / progress.total) * 100).toFixed(2)
