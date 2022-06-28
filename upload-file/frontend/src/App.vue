@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useUploadFile } from './hooks/useUploadFile'
 import { useImageType } from './hooks/useImageType'
+import SparkMD5 from 'spark-md5'
 
 const CHUNK_SIZE = 1024 * 50
 
@@ -47,7 +48,42 @@ const calculateHashWorker = (chunks) => {
     }
   })
 }
-const calculateHashIdle = () => {}
+// requestIdleCallback，此函数将在浏览器空闲时期被调用
+const calculateHashIdle = (chunks) => {
+  return new Promise((resolve) => {
+    const spark = new SparkMD5.ArrayBuffer()
+    let count = 0
+
+    const appendToSpark = async (file) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.readAsArrayBuffer(file)
+        reader.onload = (e) => {
+          spark.append(e.target.result)
+          resolve()
+        }
+      })
+    }
+
+    const workLoop = async (deadLine) => {
+      while (count < chunks.length && deadLine.timeRemaining() > 1) {
+        await appendToSpark(chunks[count].file)
+        count++
+        if (count < chunks.length) {
+          hashProgress.value = Number(
+            ((100 * count) / chunks.length).toFixed(2)
+          )
+        } else {
+          hashProgress.value = 100
+          resolve(spark.end())
+        }
+      }
+      requestIdleCallback(workLoop)
+    }
+
+    requestIdleCallback(workLoop)
+  })
+}
 
 const uploadFile = async () => {
   // const ret = await useImageType(file.value)
@@ -57,7 +93,9 @@ const uploadFile = async () => {
   // }
 
   const chunks = createFileChunk(file.value)
-  const hash = await calculateHashWorker(chunks)
+  // const hash = await calculateHashWorker(chunks)
+  // 023124c075fc91d598eac7bb0ad0bde9
+  const hash = await calculateHashIdle(chunks)
   console.log('文件 hash >>> ', hash)
   return
 
